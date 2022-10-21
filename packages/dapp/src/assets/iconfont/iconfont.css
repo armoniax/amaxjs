@@ -1,0 +1,195 @@
+@font-face {
+  font-family: "iconfont"; 
+  src: url('iconfont.woff2?t=1630403463372') format('woff2'),
+       url('iconfont.woff?t=1630403463372') format('woff'),
+       url('iconfont.ttf?t=1630403463372') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-a-ExternalLink:before {
+  content: "\e73a";
+}
+
+.icon-Heart:before {
+  content: "\e738";
+}
+
+.icon-heart2:before {
+  content: "\e739";
+}
+
+.icon-discord:before {
+  content: "\e732";
+}
+
+.icon-twitter1:before {
+  content: "\e733";
+}
+
+.icon-telegram1:before {
+  content: "\e734";
+}
+
+.icon-instagram:before {
+  content: "\e735";
+}
+
+.icon-website:before {
+  content: "\e736";
+}
+
+.icon-medium:before {
+  content: "\e737";
+}
+
+.icon-calender:before {
+  content: "\e731";
+}
+
+.icon-fixed:before {
+  content: "\e72f";
+}
+
+.icon-auction:before {
+  content: "\e730";
+}
+
+.icon-more:before {
+  content: "\e72c";
+}
+
+.icon-redo:before {
+  content: "\e72d";
+}
+
+.icon-share:before {
+  content: "\e72e";
+}
+
+.icon-image:before {
+  content: "\e729";
+}
+
+.icon-video:before {
+  content: "\e72a";
+}
+
+.icon-music:before {
+  content: "\e72b";
+}
+
+.icon-BNB-Logo:before {
+  content: "\e728";
+}
+
+.icon-picError:before {
+  content: "\e726";
+}
+
+.icon-help:before {
+  content: "\e725";
+}
+
+.icon-copy:before {
+  content: "\e724";
+}
+
+.icon-setting:before {
+  content: "\e723";
+}
+
+.icon-import:before {
+  content: "\e722";
+}
+
+.icon-arrow-down:before {
+  content: "\e720";
+}
+
+.icon-arrow-up:before {
+  content: "\e721";
+}
+
+.icon-clear:before {
+  content: "\e71f";
+}
+
+.icon-cancel:before {
+  content: "\e71d";
+}
+
+.icon-type:before {
+  content: "\e71a";
+}
+
+.icon-sort-asc:before {
+  content: "\e718";
+}
+
+.icon-sort-desc:before {
+  content: "\e719";
+}
+
+.icon-compress:before {
+  content: "\e70d";
+}
+
+.icon-resize:before {
+  content: "\e70c";
+}
+
+.icon-avatar:before {
+  content: "\e70b";
+}
+
+.icon-voice:before {
+  content: "\e70a";
+}
+
+.icon-upload:before {
+  content: "\e709";
+}
+
+.icon-close:before {
+  content: "\e708";
+}
+
+.icon-play:before {
+  content: "\e707";
+}
+
+.icon-mute:before {
+  content: "\e706";
+}
+
+.icon-twitter:before {
+  content: "\e705";
+}
+
+.icon-menu:before {
+  content: "\e704";
+}
+
+.icon-search:before {
+  content: "\e703";
+}
+
+.icon-bnb:before {
+  content: "\e702";
+}
+
+.icon-wechat:before {
+  content: "\e701";
+}
+
+.icon-telegram:before {
+  content: "\e700";
+}
+

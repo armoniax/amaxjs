@@ -1,0 +1,3 @@
+{
+  "extends": "@bve/eslint-config"
+}

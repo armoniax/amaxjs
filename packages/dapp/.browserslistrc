@@ -1,0 +1,8 @@
+# CSS要支持浏览器
+# 详情参考 https://github.com/browserslist/browserslist
+
+[production]
+last 10 versions
+
+[development]
+last 10 versions

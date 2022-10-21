@@ -1,0 +1,225 @@
+/**
+ * CSS3动画预设
+ */
+/*
+ *@ 渐显
+ *@ opacity从0到1
+ */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@mixin animate-fadeIn($duration: 0.5s) {
+  animation: fadeIn $duration ease;
+  animation-fill-mode: forwards;
+}
+
+/*
+ *@ 渐隐
+ *@ opacity从1到0
+ */
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@mixin animate-fadeOut($duration: 0.5s) {
+  animation: fadeOut $duration ease;
+  animation-fill-mode: forwards;
+}
+
+/*
+ *@ 渐显+放大
+ */
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: scale3d(0, 0, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+@mixin animate-zoomIn($duration: 0.5s) {
+  animation: zoomIn $duration ease;
+  animation-fill-mode: forwards;
+}
+
+/*
+ *@ 渐显+缩小
+ */
+@keyframes drawdown {
+  from {
+    opacity: 0;
+    transform: scale3d(4, 4, 4);
+  }
+  100% {
+    opacity: 1;
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+@mixin animate-drawdown($duration: 0.5s) {
+  animation: drawdown $duration ease;
+  animation-fill-mode: forwards;
+}
+
+/*
+ *@ 右->左显示
+ */
+@keyframes slideInRight {
+  from {
+    opacity: 1;
+    transform: translate3d(100%, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@mixin animate-slideInRight($duration: 0.5s) {
+  animation: slideInRight $duration ease;
+  animation-fill-mode: forwards;
+}
+
+/*
+ *@ 左->右显示
+ */
+@keyframes slideInLeft {
+  from {
+    opacity: 1;
+    transform: translate3d(-100%, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@mixin animate-slideInLeft($duration: 0.5s) {
+  animation: slideInLeft $duration ease;
+  animation-fill-mode: forwards;
+}
+
+/*
+ *@ 上升显示
+ */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 100%, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@mixin animate-slideInUp($duration: 0.5s) {
+  animation: slideInUp $duration ease;
+  animation-fill-mode: forwards;
+}
+
+/*
+ *@ 下降显示
+ */
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -100%, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@mixin animate-slideInDown($duration: 0.5s) {
+  animation: slideInDown $duration ease;
+  animation-fill-mode: forwards;
+}
+
+/*
+ *@ 上升隐藏
+ */
+@keyframes slideOutUp {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(0, -100%, 0);
+  }
+}
+
+@mixin animate-slideOutUp($duration: 0.5s) {
+  animation: slideOutUp $duration ease;
+  animation-fill-mode: forwards;
+}
+
+/*
+ *@ 旋转
+ */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(359deg);
+  }
+}
+
+@mixin animate-spin($duration: 2s) {
+  animation: spin $duration infinite linear;
+}
+
+@keyframes bounceIn {
+  from,
+  20%,
+  40%,
+  60%,
+  80%,
+  to {
+    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+  0% {
+    opacity: 0;
+    transform: scale3d(0.3, 0.3, 0.3);
+  }
+  20% {
+    transform: scale3d(1.1, 1.1, 1.1);
+  }
+  40% {
+    transform: scale3d(0.9, 0.9, 0.9);
+  }
+  60% {
+    opacity: 1;
+    transform: scale3d(1.03, 1.03, 1.03);
+  }
+  80% {
+    transform: scale3d(0.97, 0.97, 0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+@mixin animate-bounceIn($duration: 0.2s) {
+  animation-duration: $duration;
+  animation-name: bounceIn;
+  transform-origin: 50% 50% !important;
+}

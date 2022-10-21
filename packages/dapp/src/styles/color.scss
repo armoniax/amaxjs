@@ -1,0 +1,25 @@
+@import './variable.scss';
+/*
+ * 生成颜色相关类
+ * 例子： .color-link { color: XXX }
+ * 例子： .background-blue { background: XXX }
+ */
+$css: (
+  'color': (
+    'red': $red,
+    'green': $green,
+  ),
+  'background': (
+    'red': $red,
+    'green': $green,
+  ),
+);
+:global {
+  @each $property, $value in $css {
+    @each $cls, $cssValue in $value {
+      .#{$property}-#{$cls} {
+        #{$property}: $cssValue !important;
+      }
+    }
+  }
+}

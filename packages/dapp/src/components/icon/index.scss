@@ -1,0 +1,13 @@
+@import '@/styles/variable.scss';
+
+.icon {
+  font-size: 24px;
+  display: inline-block;
+  color: $fontColor;
+}
+.svgicon {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+  background-size: cover;
+}

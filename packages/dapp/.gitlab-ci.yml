@@ -1,0 +1,114 @@
+variables:
+  RELEASE_NAME: "df-nft-pc-web"
+  CHART_TEMPLATE: "node-chart-canary"
+  CI_GCR_REPOSITORY: "$GCR_REPOSITORY/nftland/$RELEASE_NAME"
+  ROLLOUT_STATUS_DISABLED: "false"
+  CHART: https://git_ro:$GIT_RO_PWD@$CI_SERVER_HOST/ops/chart-template.git
+
+.scripts:
+  script:
+    - git clone $CHART
+    - mv chart-template/$CHART_TEMPLATE chart
+    - kubectl get namespace "$KUBE_NAMESPACE" || kubectl create namespace "$KUBE_NAMESPACE"
+    - kubectl -n $KUBE_NAMESPACE set image deployment/$RELEASE_NAME $RELEASE_NAME=$GCR_REPOSITORY/nftland/$RELEASE_NAME:$CI_APPLICATION_TAG || helmfile apply
+    - |
+      start_ok=false
+      until ${start_ok}; do
+      kubectl -n $KUBE_NAMESPACE get canary/$RELEASE_NAME | grep 'Progressing' && start_ok=true || start_ok=false
+      sleep 5
+      done
+    - kubectl -n $KUBE_NAMESPACE wait canary/$RELEASE_NAME --for=condition=promoted --timeout=20m || true
+    - |
+      ok=false
+      until ${ok}; do
+      kubectl -n $KUBE_NAMESPACE get canary/$RELEASE_NAME | grep Succeeded && ok=true || ok=false
+      sleep 5
+      done
+
+  environment:
+    name: $CLUSTER_SCOPE
+    kubernetes:
+      namespace: $KUBE_NAMESPACE
+
+.build_image:
+  script:
+    - wget https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-347.0.0-linux-x86_64.tar.gz
+    - mkdir -p /opt/gcloud && tar -C /opt/gcloud -zxf google-cloud-sdk-347.0.0-linux-x86_64.tar.gz && /opt/gcloud/google-cloud-sdk/install.sh -q
+    - export PATH=$PATH:/opt/gcloud/google-cloud-sdk/bin
+    - echo "Logging to GitLab Container Registry with CI credentials..."
+    - gcloud auth activate-service-account ${GCR_ACCOUNT} --key-file=${GCR_KEY}
+    - gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://${GCR_REPOSITORY}
+    - cat ${GCS_KEY} > ${CI_PROJECT_DIR}/key_file
+    - docker pull $CI_GCR_REPOSITORY:builder ||  docker build --build-arg token=$GIT_RO_PWD --build-arg branch_name=$CI_COMMIT_BRANCH --build-arg gcs_account=${GCS_ACCOUNT} --target builder --cache-from $CI_GCR_REPOSITORY:builder -t $CI_GCR_REPOSITORY:builder .
+    - docker build --build-arg token=$GIT_RO_PWD --build-arg branch_name=$CI_COMMIT_BRANCH --build-arg gcs_account=${GCS_ACCOUNT} --cache-from $CI_GCR_REPOSITORY:builder --cache-from $CI_GCR_REPOSITORY:$LATEST_TAG -t $CI_GCR_REPOSITORY:$CI_APPLICATION_TAG -t $CI_GCR_REPOSITORY:$LATEST_TAG .
+    - docker push "$CI_GCR_REPOSITORY:$CI_APPLICATION_TAG"
+    - docker push "$CI_GCR_REPOSITORY:$LATEST_TAG"
+    - docker push "$CI_GCR_REPOSITORY:builder"
+
+
+stages:
+  - test
+  - build
+  - deploy
+
+test_build:
+  stage: build
+  image: "4wdas13/docker-stable-aws:v1"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "dev"
+  variables:
+    OSS_BUCKET: bideex
+    AWS_REGION: $AWS_REGION
+    AWS_ACCESS_KEY_ID: $EKS_ACCESS_KEY
+    AWS_SECRET_ACCESS_KEY: $EKS_SECRET_KEY
+    CI_REGISTRY: $CI_REGISTRY
+    CI_APPLICATION_TAG: $CI_COMMIT_BRANCH-$CI_COMMIT_SHORT_SHA
+    LATEST_TAG: "dev-latest"
+  services:
+    - docker:stable-dind
+  extends: .build_image
+
+prod_build:
+  stage: build
+  image: "4wdas13/docker-stable-aws:v1"
+  rules:
+    - if: ($CI_COMMIT_TAG =~ /^all-.*/ || $CI_COMMIT_TAG =~ /^master-.*/)
+  variables:
+    AWS_REGION: $AWS_REGION
+    CI_REGISTRY: $CI_REGISTRY
+    AWS_ACCESS_KEY_ID: $EKS_ACCESS_KEY
+    AWS_SECRET_ACCESS_KEY: $EKS_SECRET_KEY
+    CI_APPLICATION_TAG: $CI_COMMIT_TAG
+    LATEST_TAG: master-latest
+  services:
+    - docker:stable-dind
+  extends: .build_image
+
+gke_deploy:
+  stage: deploy
+  image: "4wdas13/auto-deploy:v2"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "dev"
+  needs: [test_build]
+  variables:
+    VALUE_FILE: ".values-sit.yaml"
+    KUBE_NAMESPACE: "sit"
+    CLUSTER_SCOPE: nftland
+    CI_APPLICATION_REPOSITORY: "$GCR_REPOSITORY/nftland/$RELEASE_NAME"
+    CI_APPLICATION_TAG: $CI_COMMIT_BRANCH-$CI_COMMIT_SHORT_SHA
+  extends: .scripts
+
+prod_deploy:
+  stage: deploy
+  image: "4wdas13/auto-deploy:v2"
+  rules:
+    - if: ($CI_COMMIT_TAG =~ /^all-.*/ || $CI_COMMIT_TAG =~ /^master-.*/)
+  needs: [prod_build]
+  variables:
+    OSS_BUCKET: nstatic
+    VALUE_FILE: ".values-prod.yaml"
+    KUBE_NAMESPACE: "prod"
+    CLUSTER_SCOPE: npc
+    CI_APPLICATION_REPOSITORY: "$GCR_REPOSITORY/nftland/$RELEASE_NAME"
+    CI_APPLICATION_TAG: $CI_COMMIT_TAG
+  extends: .scripts

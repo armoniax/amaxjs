@@ -1,0 +1,97 @@
+/*
+* 留白大小，间距
+*/
+
+//层次
+$level: 10;
+//每层次的像素
+$space: 5;
+//前缀，取的是space中的s
+$prefix: 's';
+
+/*
+*@ 计算方法
+*@ $level * $space
+*@ 列如：spl-1 = {padding-left: 5px}
+*@ 列如：smb-2 = {margin-bottom: 10px}
+*@ 列如：sp-3 = {padding: 15px}
+*/
+:global {
+  //padding
+  @for $i from 0 through $level {
+    .#{$prefix}pl-#{$i} {
+      padding-left: #{$space * $i}px;
+    }
+  }
+
+  @for $i from 0 through $level {
+    .#{$prefix}pr-#{$i} {
+      padding-right: #{$space * $i}px;
+    }
+  }
+
+  @for $i from 0 through $level {
+    .#{$prefix}pt-#{$i} {
+      padding-top: #{$space * $i}px;
+    }
+  }
+
+  @for $i from 0 through $level {
+    .#{$prefix}pb-#{$i} {
+      padding-bottom: #{$space * $i}px;
+    }
+  }
+
+  @for $i from 0 through $level {
+    .#{$prefix}p-#{$i} {
+      padding: #{$space * $i}px;
+    }
+  }
+
+  @for $i from 0 through $level {
+    @for $j from 0 through $level {
+      .#{$prefix}p-#{$i}-#{$j} {
+        padding: #{$space * $i}px #{$space * $j}px;
+      }
+    }
+  }
+
+  //margin
+  @for $i from 0 through $level {
+    .#{$prefix}ml-#{$i} {
+      margin-left: #{$space * $i}px;
+    }
+  }
+
+  @for $i from 0 through $level {
+    .#{$prefix}mr-#{$i} {
+      margin-right: #{$space * $i}px;
+    }
+  }
+
+  @for $i from 0 through $level {
+    .#{$prefix}mt-#{$i} {
+      margin-top: #{$space * $i}px;
+    }
+  }
+
+  @for $i from 0 through $level {
+    .#{$prefix}mb-#{$i} {
+      margin-bottom: #{$space * $i}px;
+    }
+  }
+
+  @for $i from 0 through $level {
+    .#{$prefix}m-#{$i} {
+      margin: #{$space * $i}px;
+    }
+  }
+
+  @for $i from 0 through $level {
+    @for $j from 0 through $level {
+      .#{$prefix}m-#{$i}-#{$j} {
+        margin: #{$space * $i}px #{$space * $j}px;
+      }
+    }
+  }
+}

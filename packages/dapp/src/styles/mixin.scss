@@ -1,0 +1,46 @@
+@mixin placeholder($fontSize) {
+  &::-webkit-input-placeholder {
+    /* WebKit browsers */
+    font-size: $fontSize;
+    color: $placeholderColor;
+    font-weight: normal;
+  }
+
+  &::-moz-placeholder {
+    /* Mozilla Firefox 19+ */
+    font-size: $fontSize;
+    color: $placeholderColor;
+    font-weight: normal;
+  }
+
+  &:-ms-input-placeholder {
+    /* Internet Explorer 10+ */
+    font-size: $fontSize;
+    color: $placeholderColor;
+    font-weight: normal;
+  }
+}
+
+@mixin maxWidth() {
+  // 页面内容宽度
+  width: 1200px;
+  margin: 0 auto;
+
+  @media (max-width: 640px) {
+    width: auto;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}
+@mixin ellipsis() {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@mixin borderRadius {
+  border-radius: 12px;
+  @media (max-width: 640px) {
+    border-radius: 8px;
+  }
+}

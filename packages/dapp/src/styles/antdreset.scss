@@ -1,0 +1,17 @@
+// antd样式重置
+/*
+* antd tabs样式定义
+*/
+@import './variable.scss';
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+strong,
+em {
+  padding: 0;
+  margin: 0;
+}

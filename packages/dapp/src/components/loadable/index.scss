@@ -1,0 +1,13 @@
+.loadable {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px;
+}
+.error {
+  text-align: center;
+  flex: 1;
+  p {
+    margin: 10px 0;
+  }
+}

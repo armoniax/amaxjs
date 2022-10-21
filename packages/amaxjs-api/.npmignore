@@ -1,0 +1,7 @@
+npm-debug.log
+coverage
+sandbox
+docs
+src
+dist/test.js
+dist

@@ -1,0 +1,9 @@
+@import '@/styles/animate.scss';
+
+.header {
+  height: $headerHeight;
+  background-color: #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

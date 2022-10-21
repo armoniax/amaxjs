@@ -1,0 +1,56 @@
+@import '@/styles/animate.scss';
+@import '@/styles/variable.scss';
+
+.button {
+  border-radius: 8px;
+  height: 48px;
+  line-height: 48px;
+  color: #fff;
+  font-size: 16px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  outline: none;
+  width: 100%;
+  transition: all 0.2s;
+  border: 1px solid $buttonColor;
+  box-sizing: border-box;
+  color: $buttonColor;
+  cursor: pointer;
+  user-select: none;
+  background-color: #fff;
+  user-select: none;
+  &.primary {
+    background-color: $buttonColor;
+    color: #fff;
+    border: 0;
+    &.loading {
+      background-color: rgba($buttonColor, 0.4);
+    }
+  }
+  &.large {
+    height: 64px;
+    line-height: 64px;
+    font-weight: bold;
+    font-size: 16px;
+  }
+  &.small {
+    height: 36px;
+    line-height: 36px;
+  }
+  &.loading {
+    pointer-events: none;
+  }
+  &.disabled {
+    pointer-events: none;
+    color: #8f93ba;
+    background-color: $buttonDisabledColor;
+    border-color: $buttonDisabledColor;
+  }
+  &:active {
+    background-color: rgba($buttonColor, 0.5);
+    color: #fff;
+  }
+}
