@@ -93,13 +93,13 @@ export default class BrowserTransport implements LinkTransport {
     storage: LinkStorage
 
     constructor(public readonly options: BrowserTransportOptions = {}) {
-        this.classPrefix = options.classPrefix || 'anchor-link'
+        this.classPrefix = options.classPrefix || 'aplink-link'
         this.injectStyles = !(options.injectStyles === false)
         this.importantStyles = !(options.importantStyles === false)
         this.requestStatus = !(options.requestStatus === false)
         this.fuelEnabled = options.disableGreymassFuel !== true
         this.fuelReferrer = options.fuelReferrer || 'teamgreymass'
-        this.storage = new Storage(options.storagePrefix || 'anchor-link')
+        this.storage = new Storage(options.storagePrefix || 'aplink-link')
         this.supportedChains = options.supportedChains || defaultSupportedChains
         this.showingManual = false
     }
@@ -172,7 +172,10 @@ export default class BrowserTransport implements LinkTransport {
             })
             version.onclick = (event) => {
                 event.stopPropagation()
-                window.open('https://github.com/greymass/anchor-link', '_blank')
+                window.open(
+                    'https://github.com/armoniax/amaxjs/tree/main/packages/anchor-link',
+                    '_blank'
+                )
             }
             wrapper.appendChild(version)
             this.containerEl.appendChild(wrapper)
@@ -285,7 +288,7 @@ export default class BrowserTransport implements LinkTransport {
 
         const copyEl = this.createEl({class: 'copy'})
         const copyA = this.createEl({tag: 'a', text: 'Copy request link'})
-        const copySpan = this.createEl({tag: 'span', text: 'Link copied - Paste in Anchor'})
+        const copySpan = this.createEl({tag: 'span', text: 'Link copied - Paste in APLink'})
         copyEl.appendChild(copyA)
         copyEl.appendChild(copySpan)
         qrEl.appendChild(copyEl)
@@ -312,7 +315,7 @@ export default class BrowserTransport implements LinkTransport {
             tag: 'a',
             class: 'button',
             href: crossDeviceUri,
-            text: 'Launch Anchor',
+            text: 'Launch APLink',
         })
         linkEl.appendChild(linkA)
 
@@ -341,11 +344,11 @@ export default class BrowserTransport implements LinkTransport {
 
         let footnote: HTMLElement | undefined
         if (showFooter) {
-            footnote = this.createEl({text: "Don't have Anchor yet? "})
+            footnote = this.createEl({text: "Don't have APLink yet? "})
             const footnoteLink = this.createEl({
                 tag: 'a',
                 target: '_blank',
-                href: 'https://greymass.com/anchor',
+                href: 'http://www.aplink.app/home',
                 text: 'Download now',
             })
             footnote.appendChild(footnoteLink)
@@ -377,7 +380,7 @@ export default class BrowserTransport implements LinkTransport {
         this.activeCancel = cancel
         const title = request.isIdentity() ? 'Login' : 'Sign'
         const subtitle =
-            'Scan the QR-code with Anchor on another device or use the button to open it here.'
+            'Scan the QR-code with APLink on another device or use the button to open it here.'
         this.displayRequest(request, title, subtitle).catch(cancel)
     }
 
@@ -408,7 +411,7 @@ export default class BrowserTransport implements LinkTransport {
 
         let subtitle: string
         if (deviceName && deviceName.length > 0) {
-            subtitle = `Please open Anchor Wallet on “${deviceName}” to review and sign the transaction.`
+            subtitle = `Please open APLink Wallet on “${deviceName}” to review and sign the transaction.`
         } else {
             subtitle = 'Please review and sign the transaction in the linked wallet.'
         }

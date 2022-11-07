@@ -20,3 +20,4 @@ config.gypi
 *.orig
 package-lock.json
 np
+amaxjs-signing-request

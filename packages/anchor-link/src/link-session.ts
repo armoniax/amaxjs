@@ -123,9 +123,9 @@ export class LinkChannelSession extends LinkSession implements LinkTransport {
     readonly publicKey: PublicKey
     serialize: () => SerializedLinkSession
     private timeout = 2 * 60 * 1000 // ms
-    private encrypt: (request: SigningRequest) => SealedMessage
-    private channelKey: PublicKey
-    private channelUrl: string
+    public encrypt: (request: SigningRequest) => SealedMessage
+    public channelKey: PublicKey
+    public channelUrl: string
     private channelName: string
 
     constructor(link: Link, data: LinkChannelSessionData, metadata: any) {
@@ -140,6 +140,7 @@ export class LinkChannelSession extends LinkSession implements LinkTransport {
         this.channelUrl = data.channel.url
         this.channelName = data.channel.name
         this.encrypt = (request) => {
+            console.log('privateKey', privateKey)
             return sealMessage(request.encode(true, false), privateKey, this.channelKey)
         }
         this.metadata = {

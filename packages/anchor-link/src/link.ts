@@ -41,6 +41,7 @@ import {LinkTransport} from './link-transport'
 import {LinkCreate} from './link-types'
 import {BuoyCallbackService, LinkCallback, LinkCallbackService} from './link-callback'
 import {sessionMetadata} from './utils'
+import {Notify} from './link-notify'
 
 /**
  * Payload accepted by the [[Link.transact]] method.
@@ -165,6 +166,9 @@ export class LinkChain implements AbiProvider {
     }
 }
 
+export enum onEventType {
+    appRemoveSession,
+}
 /**
  * Anchor Link main class.
  *
@@ -201,6 +205,8 @@ export class Link {
     private callbackService: LinkCallbackService
     private verifyProofs: boolean
     private encodeChainIds: boolean
+    private notify: Notify
+    private onEvent: any
 
     /** Create a new link instance. */
     constructor(options: LinkOptions) {
@@ -253,6 +259,10 @@ export class Link {
             options.encodeChainIds !== undefined
                 ? options.encodeChainIds
                 : LinkOptions.defaults.encodeChainIds
+
+        this.notify = new Notify()
+        ;(window as any).notify = this.notify
+        this.onEvent = {}
     }
 
     /**
@@ -585,6 +595,7 @@ export class Link {
                 dapp: JSON.stringify(Array.isArray(dapp) ? dapp : this.getDappInfo()),
             },
         })
+
         const metadata = sessionMetadata(res.payload, res.resolved.request)
         const signerKey = res.proof.recover()
         let session: LinkSession
@@ -618,6 +629,13 @@ export class Link {
             )
         }
         await this.storeSession(session)
+
+        this.notify.connect(session as LinkChannelSession, async () => {
+            await this.clearSessions(identifier as string, false)
+            if (this.onEvent[onEventType.appRemoveSession]) {
+                this.onEvent[onEventType.appRemoveSession]()
+            }
+        })
         return {
             ...res,
             session,
@@ -681,7 +699,17 @@ export class Link {
             // update latest used
             await this.touchSession(identifier, session.auth, session.chainId)
         }
+        this.notify.connect(session as LinkChannelSession, async () => {
+            await this.clearSessions(identifier as string, false)
+            if (this.onEvent[onEventType.appRemoveSession]) {
+                this.onEvent[onEventType.appRemoveSession]()
+            }
+        })
         return session
+    }
+
+    on(type, callback) {
+        this.onEvent[type] = callback
     }
 
     /**
@@ -710,9 +738,18 @@ export class Link {
      * Remove stored session for given identifier and auth.
      * @throws If no [[LinkStorage]] adapter is configured or there was an error removing the session data.
      */
-    public async removeSession(identifier: NameType, auth: PermissionLevel, chainId: ChainId) {
+    public async removeSession(
+        identifier: NameType,
+        auth: PermissionLevel,
+        chainId: ChainId,
+        isNotify = true
+    ) {
         if (!this.storage) {
             throw new Error('Unable to remove session: No storage adapter configured')
+        }
+        // notify app remove session
+        if (isNotify) {
+            await this.notify.send()
         }
         const key = this.sessionKey(identifier, formatAuth(auth), String(chainId))
         await this.storage.remove(key)
@@ -723,12 +760,12 @@ export class Link {
      * Remove all stored sessions for given identifier.
      * @throws If no [[LinkStorage]] adapter is configured or there was an error removing the session data.
      */
-    public async clearSessions(identifier: string) {
+    public async clearSessions(identifier: string, isNotify = true) {
         if (!this.storage) {
             throw new Error('Unable to clear sessions: No storage adapter configured')
         }
         for (const {auth, chainId} of await this.listSessions(identifier)) {
-            await this.removeSession(identifier, auth, chainId)
+            await this.removeSession(identifier, auth, chainId, isNotify)
         }
     }
 
