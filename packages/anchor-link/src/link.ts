@@ -166,9 +166,6 @@ export class LinkChain implements AbiProvider {
     }
 }
 
-export enum onEventType {
-    appRemoveSession,
-}
 /**
  * Anchor Link main class.
  *
@@ -205,8 +202,6 @@ export class Link {
     private callbackService: LinkCallbackService
     private verifyProofs: boolean
     private encodeChainIds: boolean
-    private notify: Notify
-    private onEvent: any
 
     /** Create a new link instance. */
     constructor(options: LinkOptions) {
@@ -259,10 +254,6 @@ export class Link {
             options.encodeChainIds !== undefined
                 ? options.encodeChainIds
                 : LinkOptions.defaults.encodeChainIds
-
-        this.notify = new Notify()
-        ;(window as any).notify = this.notify
-        this.onEvent = {}
     }
 
     /**
@@ -630,12 +621,6 @@ export class Link {
         }
         await this.storeSession(session)
 
-        this.notify.connect(session as LinkChannelSession, async () => {
-            await this.clearSessions(identifier as string, false)
-            if (this.onEvent[onEventType.appRemoveSession]) {
-                this.onEvent[onEventType.appRemoveSession]()
-            }
-        })
         return {
             ...res,
             session,
@@ -699,17 +684,7 @@ export class Link {
             // update latest used
             await this.touchSession(identifier, session.auth, session.chainId)
         }
-        this.notify.connect(session as LinkChannelSession, async () => {
-            await this.clearSessions(identifier as string, false)
-            if (this.onEvent[onEventType.appRemoveSession]) {
-                this.onEvent[onEventType.appRemoveSession]()
-            }
-        })
         return session
-    }
-
-    on(type, callback) {
-        this.onEvent[type] = callback
     }
 
     /**
@@ -747,9 +722,9 @@ export class Link {
         if (!this.storage) {
             throw new Error('Unable to remove session: No storage adapter configured')
         }
-        // notify app remove session
+        const session = await this.restoreSession(identifier)
         if (isNotify) {
-            await this.notify.send()
+            await (session as LinkChannelSession).sendRemove()
         }
         const key = this.sessionKey(identifier, formatAuth(auth), String(chainId))
         await this.storage.remove(key)
@@ -760,12 +735,12 @@ export class Link {
      * Remove all stored sessions for given identifier.
      * @throws If no [[LinkStorage]] adapter is configured or there was an error removing the session data.
      */
-    public async clearSessions(identifier: string, isNotify = true) {
+    public async clearSessions(identifier: string) {
         if (!this.storage) {
             throw new Error('Unable to clear sessions: No storage adapter configured')
         }
         for (const {auth, chainId} of await this.listSessions(identifier)) {
-            await this.removeSession(identifier, auth, chainId, isNotify)
+            await this.removeSession(identifier, auth, chainId)
         }
     }
 

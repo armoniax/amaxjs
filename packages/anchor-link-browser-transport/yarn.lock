@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@amax/anchor-link@^3.5.2":
-  version "3.5.2"
-  resolved "https://registry.yarnpkg.com/@amax/anchor-link/-/anchor-link-3.5.2.tgz#335c3daf88718478974d36fb7426a1c75ad0218c"
-  integrity sha512-8daqXZ8UaE5OO4lPf6dbEo5i970GDtgk4hCjngoMBi8yDFILWEK6FiZRZr1PkpmyUSktMkqXe246ovQuSQGtow==
+"@amax/anchor-link@^3.5.13":
+  version "3.5.13"
+  resolved "https://registry.yarnpkg.com/@amax/anchor-link/-/anchor-link-3.5.13.tgz#702bfbfe6bf4f7ae1a2c449fef1f3fca176e17c6"
+  integrity sha512-5pK81+BmOfVVYWcEVZKkl/1CFTm9IF+2V2d2B6dux2LHelBgWm1UuROL1Be6AXIueW9DmZJT/5YGWiSBkhl6/g==
   dependencies:
     "@greymass/eosio" "^0.6.0"
     "@greymass/miniaes" "^1.0.0"

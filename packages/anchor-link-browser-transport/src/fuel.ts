@@ -42,6 +42,7 @@ export async function fuel(
     if (!nodeUrl) {
         throw new Error(`Blockchain not supported by this resource provider.`)
     }
+
     const result = await apiCall(nodeUrl + '/v1/resource_provider/request_transaction', {
         ref: referrer,
         request,

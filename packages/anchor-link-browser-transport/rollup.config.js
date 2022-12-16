@@ -38,7 +38,7 @@ export default [
             sourcemap: true,
             exports: 'default',
         },
-        plugins: [replaceVersion, typescript({target: 'es6'}), json()],
+        plugins: [replaceVersion, typescript({target: 'es6', resolveJsonModule: true}), json()],
         external: Object.keys({...pkg.dependencies, ...pkg.peerDependencies}),
         onwarn,
     },
@@ -50,7 +50,7 @@ export default [
             format: 'esm',
             sourcemap: true,
         },
-        plugins: [replaceVersion, typescript({target: 'es2020'}), json()],
+        plugins: [replaceVersion, typescript({target: 'es2020', resolveJsonModule: true}), json()],
         external: Object.keys({...pkg.dependencies, ...pkg.peerDependencies}),
         onwarn,
     },
@@ -72,7 +72,7 @@ export default [
         },
         plugins: [
             replaceVersion,
-            resolve({extensions}),
+            resolve({extensions, preferBuiltins: true}),
             commonjs(),
             babel({
                 extensions,

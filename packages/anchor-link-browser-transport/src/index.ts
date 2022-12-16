@@ -14,6 +14,7 @@ import {
 
 import styleText from './styles'
 import generateQr from './qrcode'
+import Intl from './i18n'
 
 import {fuel, compareVersion as fuelVersion} from './fuel'
 
@@ -46,19 +47,22 @@ export interface BrowserTransportOptions {
      * Override of the supported resource provider chains.
      */
     supportedChains?: Record<string, string>
+
     /**
      * Set to false to not use !important styles, defaults to true.
      */
     importantStyles?: boolean
+    /**
+     * en-us | zh-cn
+     */
+    currentLocale?: string
 }
 
 const defaultSupportedChains = {
-    aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906: 'https://eos.greymass.com',
-    '2a02a0053e5a8cf73a56ba0fda11e4d92e0238a4a2aa74fccf46d5a910746840':
-        'https://jungle3.greymass.com',
-    '4667b205c6838ef70ff7988f6e8257e8be0e1284a2f59699054a018f743b1d11':
-        'https://telos.greymass.com',
-    '1064487b3cd1a897ce03ae5b6a865651747e2e152090f99c1d19d44e01aea5a4': 'https://wax.greymass.com',
+    '2403d6f602a87977f898aa3c62c79a760f458745904a15b3cd63a106f62adc16':
+        'https://expnode.amaxscan.io',
+    '208dacab3cd2e181c86841613cf05d9c60786c677e4ce86b266d0a58884968f7':
+        'https://test-chain.ambt.art',
 }
 
 interface DialogArgs {
@@ -97,11 +101,12 @@ export default class BrowserTransport implements LinkTransport {
         this.injectStyles = !(options.injectStyles === false)
         this.importantStyles = !(options.importantStyles === false)
         this.requestStatus = !(options.requestStatus === false)
-        this.fuelEnabled = options.disableGreymassFuel !== true
+        this.fuelEnabled = false // options.disableGreymassFuel !== true
         this.fuelReferrer = options.fuelReferrer || 'teamgreymass'
         this.storage = new Storage(options.storagePrefix || 'aplink-link')
         this.supportedChains = options.supportedChains || defaultSupportedChains
         this.showingManual = false
+        this.intl = new Intl(options.currentLocale || 'en-us')
     }
 
     private classPrefix: string
@@ -120,12 +125,13 @@ export default class BrowserTransport implements LinkTransport {
     private closeTimer?: NodeJS.Timeout
     private prepareStatusEl?: HTMLElement
     private showingManual: boolean
+    private intl: Intl
 
     private closeModal() {
         this.hide()
         if (this.activeCancel) {
             this.activeRequest = undefined
-            this.activeCancel('Modal closed')
+            this.activeCancel(this.intl.get('modalClosed'))
             this.activeCancel = undefined
         }
     }
@@ -134,6 +140,7 @@ export default class BrowserTransport implements LinkTransport {
         this.showingManual = false
         if (this.injectStyles && !this.styleEl) {
             this.styleEl = document.createElement('style')
+
             this.styleEl.type = 'text/css'
             let css = styleText.replace(/%prefix%/g, this.classPrefix)
             if (this.importantStyles) {
@@ -228,21 +235,23 @@ export default class BrowserTransport implements LinkTransport {
 
     private showDialog(args: DialogArgs) {
         this.setupElements()
-
         const infoEl = this.createEl({class: 'info'})
-        const infoTitle = this.createEl({class: 'title', tag: 'span', content: args.title})
+
         const infoSubtitle = this.createEl({
             class: 'subtitle',
             tag: 'span',
             content: args.subtitle,
         })
-        infoEl.appendChild(infoTitle)
+        if (args.type !== 'login') {
+            const infoTitle = this.createEl({class: 'title', tag: 'span', content: args.title})
+            infoEl.appendChild(infoTitle)
+        }
         infoEl.appendChild(infoSubtitle)
         const logoEl = this.createEl({class: 'logo'})
         if (args.type) {
             logoEl.classList.add(args.type)
+            this.requestEl.classList.add(args.type)
         }
-
         emptyElement(this.requestEl)
         this.requestEl.appendChild(logoEl)
         this.requestEl.appendChild(infoEl)
@@ -275,7 +284,7 @@ export default class BrowserTransport implements LinkTransport {
         sameDeviceRequest.setInfoKey('same_device', true)
         sameDeviceRequest.setInfoKey('return_path', returnUrl)
 
-        const sameDeviceUri = sameDeviceRequest.encode(true, false)
+        // const sameDeviceUri = sameDeviceRequest.encode(true, false)
         const crossDeviceUri = request.encode(true, false)
 
         const qrEl = this.createEl({class: 'qr'})
@@ -287,11 +296,11 @@ export default class BrowserTransport implements LinkTransport {
         }
 
         const copyEl = this.createEl({class: 'copy'})
-        const copyA = this.createEl({tag: 'a', text: 'Copy request link'})
-        const copySpan = this.createEl({tag: 'span', text: 'Link copied - Paste in APLink'})
+        const copyA = this.createEl({tag: 'a', text: this.intl.get('copyRequestLink')}) // 'Copy request link'
+        const copySpan = this.createEl({tag: 'span', text: this.intl.get('linkCopied')}) // 'Link copied - Paste in APLink'
         copyEl.appendChild(copyA)
         copyEl.appendChild(copySpan)
-        qrEl.appendChild(copyEl)
+        // qrEl.appendChild(copyEl)
 
         copyA.addEventListener('click', (event) => {
             event.preventDefault()
@@ -310,77 +319,80 @@ export default class BrowserTransport implements LinkTransport {
             })
         }
 
-        const linkEl = this.createEl({class: 'uri'})
+        const linkEl = this.createEl({class: 'download', text: this.intl.get('haveAPLink')})
         const linkA = this.createEl({
             tag: 'a',
             class: 'button',
             href: crossDeviceUri,
-            text: 'Launch APLink',
+            text: this.intl.get('launchAPLink'), // 'Launch APLink',
         })
-        linkEl.appendChild(linkA)
 
-        if (isFirefox() || isBrave()) {
-            // this prevents firefox/brave from killing the websocket connection once the link is clicked
-            const iframe = this.createEl({
-                class: 'wskeepalive',
-                src: 'about:blank',
-                tag: 'iframe',
-            })
-            linkEl.appendChild(iframe)
-            linkA.addEventListener('click', (event) => {
-                event.preventDefault()
-                iframe.setAttribute('src', sameDeviceUri)
-            })
-        } else {
-            linkA.addEventListener('click', (event) => {
-                event.preventDefault()
-                window.location.href = sameDeviceUri
-            })
-        }
+        const footnoteLink = this.createEl({
+            tag: 'a',
+            target: '_blank',
+            href: 'http://www.aplink.app/home',
+            text: this.intl.get('downloadNow'), // 'Download now',
+        })
+        linkEl.appendChild(footnoteLink)
+
+        // if (isFirefox() || isBrave()) {
+        //     // this prevents firefox/brave from killing the websocket connection once the link is clicked
+        //     const iframe = this.createEl({
+        //         class: 'wskeepalive',
+        //         src: 'about:blank',
+        //         tag: 'iframe',
+        //     })
+        //     linkEl.appendChild(iframe)
+        //     linkA.addEventListener('click', (event) => {
+        //         event.preventDefault()
+        //         iframe.setAttribute('src', sameDeviceUri)
+        //     })
+        // } else {
+        //     linkA.addEventListener('click', (event) => {
+        //         event.preventDefault()
+        //         window.location.href = sameDeviceUri
+        //     })
+        // }
 
         const content = this.createEl({class: 'info'})
         content.appendChild(qrEl)
-        content.appendChild(linkEl)
+        content.appendChild(copyEl)
+        content.appendChild(linkEl.cloneNode(true))
+        content.appendChild(linkA)
 
         let footnote: HTMLElement | undefined
         if (showFooter) {
-            footnote = this.createEl({text: "Don't have APLink yet? "})
-            const footnoteLink = this.createEl({
-                tag: 'a',
-                target: '_blank',
-                href: 'http://www.aplink.app/home',
-                text: 'Download now',
-            })
-            footnote.appendChild(footnoteLink)
+            footnote = linkEl
         }
         this.showDialog({
             title,
             subtitle,
             footnote,
             content,
+            type: 'login',
         })
     }
 
     public async showLoading() {
         const status = this.createEl({
             tag: 'span',
-            text: 'Preparing request...',
+            text: this.intl.get('preparingRequest'), // 'Preparing request...',
         })
         this.prepareStatusEl = status
         this.showDialog({
-            title: 'Loading',
+            title: this.intl.get('loading'), // 'Loading',
             subtitle: status,
             type: 'loading',
         })
     }
 
+    // login
     public onRequest(request: SigningRequest, cancel: (reason: string | Error) => void) {
         this.clearTimers()
         this.activeRequest = request
         this.activeCancel = cancel
-        const title = request.isIdentity() ? 'Login' : 'Sign'
-        const subtitle =
-            'Scan the QR-code with APLink on another device or use the button to open it here.'
+        const title = this.intl.get(request.isIdentity() ? 'login' : 'sign')
+        const subtitle = this.intl.get('scan')
         this.displayRequest(request, title, subtitle).catch(cancel)
     }
 
@@ -411,34 +423,36 @@ export default class BrowserTransport implements LinkTransport {
 
         let subtitle: string
         if (deviceName && deviceName.length > 0) {
-            subtitle = `Please open APLink Wallet on “${deviceName}” to review and sign the transaction.`
+            // `Please open APLink Wallet on “${deviceName}” to review and sign the transaction.`
+            subtitle = this.intl.get('openAPLink', {deviceName})
         } else {
-            subtitle = 'Please review and sign the transaction in the linked wallet.'
+            // 'Please review and sign the transaction in the linked wallet.'
+            subtitle = this.intl.get('review')
         }
 
-        const title = this.createEl({tag: 'span', text: 'Sign'})
+        const title = this.createEl({tag: 'span', text: this.intl.get('sign')})
         const expires = new Date(Date.now() + timeout)
         const updateCountdown = () => {
-            title.textContent = `Sign - ${countdownFormat(expires)}`
+            title.textContent = `${this.intl.get('sign')} - ${countdownFormat(expires)}`
         }
         this.countdownTimer = setInterval(updateCountdown, 200)
         updateCountdown()
 
         const content = this.createEl({class: 'info'})
-        const manualHr = this.createEl({tag: 'hr'})
-        const manualA = this.createEl({
-            tag: 'a',
-            text: 'Sign manually or with another device',
-            class: 'manual',
-        })
-        manualA.addEventListener('click', (event) => {
-            event.preventDefault()
-            const error = new SessionError('Manual', 'E_TIMEOUT', session)
-            error[SkipToManual] = true
-            cancel(error)
-        })
-        content.appendChild(manualHr)
-        content.appendChild(manualA)
+        // const manualHr = this.createEl({tag: 'hr'})
+        // const manualA = this.createEl({
+        //     tag: 'a',
+        //     text: this.intl.get('signManually'), // 'Sign manually or with another device',
+        //     class: 'manual',
+        // })
+        // manualA.addEventListener('click', (event) => {
+        //     event.preventDefault()
+        //     const error = new SessionError('Manual', 'E_TIMEOUT', session)
+        //     error[SkipToManual] = true
+        //     cancel(error)
+        // })
+        // content.appendChild(manualHr)
+        // content.appendChild(manualA)
 
         this.showDialog({
             title,
@@ -500,15 +514,15 @@ export default class BrowserTransport implements LinkTransport {
         const content = this.createEl({class: 'info'})
         const feePart1 = this.createEl({
             tag: 'span',
-            text: 'You can try to ',
+            text: this.intl.get('youCanTryTo'), // 'You can try to ',
         })
         const feeBypass = this.createEl({
             tag: 'a',
-            text: 'proceed without the fee',
+            text: this.intl.get('proceed'), // 'proceed without the fee',
         })
         const feePart2 = this.createEl({
             tag: 'span',
-            text: ' or accept the fee shown below to pay for these costs.',
+            text: this.intl.get('accept'), // ' or accept the fee shown below to pay for these costs.',
         })
 
         const feeDescription = this.createEl({
@@ -523,21 +537,23 @@ export default class BrowserTransport implements LinkTransport {
         const expireEl = this.createEl({
             tag: 'span',
             class: 'subtitle',
-            text: 'Offer expires in --:--',
+            text: this.intl.get('offerExpires', {expires: '--:--'}), // 'Offer expires in --:--',
         })
         content.appendChild(expireEl)
 
         const expires = request.getRawTransaction().expiration.toDate()
         const expireTimer = setInterval(() => {
-            expireEl.textContent = `Offer expires in ${countdownFormat(expires)}`
+            expireEl.textContent = this.intl.get('offerExpires', {
+                expires: countdownFormat(expires),
+            }) // `Offer expires in ${countdownFormat(expires)}`
             if (expires.getTime() < Date.now()) {
-                this.activeCancel!('Offer expired')
+                this.activeCancel!(this.intl.get('offerExpired'))
             }
         }, 200)
 
         const footnote = this.createEl({
             tag: 'span',
-            text: 'Resources offered by ',
+            text: this.intl.get('resourcesOffered'), // 'Resources offered by ',
         })
         const footnoteLink = this.createEl({
             tag: 'a',
@@ -554,13 +570,13 @@ export default class BrowserTransport implements LinkTransport {
         })
         const confirmPromise = new Promise<void>((resolve) => {
             this.showDialog({
-                title: 'Transaction Fee',
-                subtitle:
-                    'Your account lacks the network resources for this transaction and it cannot be covered for free.',
+                title: this.intl.get('transactionFee'), // 'Transaction Fee',
+                // 'Your account lacks the network resources for this transaction and it cannot be covered for free.',
+                subtitle: this.intl.get('account'),
                 type: 'fuel',
                 content,
                 action: {
-                    text: `Accept Fee of ${fee}`,
+                    text: this.intl.get('acceptFee', {fee}), // `Accept Fee of ${fee}`,
                     callback: resolve,
                 },
                 footnote,
@@ -582,8 +598,8 @@ export default class BrowserTransport implements LinkTransport {
         }
         this.displayRequest(
             request,
-            'Sign manually',
-            'Want to sign with another device or didn’t get the signing request in your wallet, scan this QR or copy request and paste in app.',
+            this.intl.get('manually'), // 'Sign manually',
+            this.intl.get('wantToSign'), // 'Want to sign with another device or didn’t get the signing request in your wallet, scan this QR or copy request and paste in app.',
             false
         )
         this.showingManual = true
@@ -657,19 +673,27 @@ export default class BrowserTransport implements LinkTransport {
                 return true
             }
             const deviceName = session.metadata.name
-            let subtitle: string
-            if (deviceName && deviceName.length > 0) {
-                subtitle = `Unable to deliver the request to “${deviceName}”.`
-            } else {
-                subtitle = 'Unable to deliver the request to the linked wallet.'
-            }
-            subtitle += ` ${error.message}.`
+
+            const subtitle = this.createEl({
+                tag: 'div',
+                content:
+                    deviceName && deviceName.length > 0
+                        ? this.intl.get('unableDeliver', {deviceName})
+                        : this.intl.get('unableDeliverLinkWallet'),
+            })
+            const errorMsg = this.createEl({
+                tag: 'div',
+                text: error.message,
+                class: 'error',
+            })
+            subtitle.appendChild(errorMsg)
+
             this.showDialog({
-                title: 'Unable to reach device',
+                title: this.intl.get('UnableReachDevice'), // 'Unable to reach device',
                 subtitle,
                 type: 'warning',
                 action: {
-                    text: 'Sign manually',
+                    text: this.intl.get('manually'), // 'Sign manually',
                     callback: () => {
                         this.showRecovery(request, session)
                     },
@@ -685,8 +709,10 @@ export default class BrowserTransport implements LinkTransport {
             this.clearTimers()
             if (this.requestStatus) {
                 this.showDialog({
-                    title: 'Success!',
-                    subtitle: request.isIdentity() ? 'Login completed.' : 'Transaction signed.',
+                    title: this.intl.get('success'),
+                    subtitle: this.intl.get(
+                        request.isIdentity() ? 'loginCompleted' : 'transactionSigned'
+                    ),
                     type: 'success',
                 })
                 this.closeTimer = setTimeout(() => {
@@ -715,8 +741,12 @@ export default class BrowserTransport implements LinkTransport {
                     errorMessage = error.message || String(error)
                 }
                 this.showDialog({
-                    title: 'Transaction Error',
-                    subtitle: errorMessage,
+                    title: this.intl.get('transactionError'), // 'Transaction Error',
+                    subtitle: this.createEl({
+                        tag: 'div',
+                        text: errorMessage,
+                        class: 'error',
+                    }),
                     type: 'error',
                 })
             } else {

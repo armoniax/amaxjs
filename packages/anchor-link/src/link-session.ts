@@ -17,6 +17,7 @@ import {Link, TransactArgs, TransactOptions, TransactResult} from './link'
 import {LinkTransport} from './link-transport'
 import {LinkCreate, LinkInfo, SealedMessage} from './link-types'
 import {fetch, logWarn, sealMessage, sessionMetadata} from './utils'
+import {Notify} from './link-notify'
 
 /**
  * Type describing a link session that can create a eosjs compatible
@@ -54,9 +55,9 @@ export abstract class LinkSession {
      * session.link.removeSession(session.identifier, session.auth, session.chainId)
      * ```
      */
-    async remove() {
+    async remove(isNotify = true) {
         if (this.link.storage) {
-            await this.link.removeSession(this.identifier, this.auth, this.chainId)
+            await this.link.removeSession(this.identifier, this.auth, this.chainId, isNotify)
         }
     }
     /** API client for the chain this session is valid on. */
@@ -127,6 +128,7 @@ export class LinkChannelSession extends LinkSession implements LinkTransport {
     public channelKey: PublicKey
     public channelUrl: string
     private channelName: string
+    private notify: Notify
 
     constructor(link: Link, data: LinkChannelSessionData, metadata: any) {
         super()
@@ -140,7 +142,6 @@ export class LinkChannelSession extends LinkSession implements LinkTransport {
         this.channelUrl = data.channel.url
         this.channelName = data.channel.name
         this.encrypt = (request) => {
-            console.log('privateKey', privateKey)
             return sealMessage(request.encode(true, false), privateKey, this.channelKey)
         }
         this.metadata = {
@@ -161,12 +162,23 @@ export class LinkChannelSession extends LinkSession implements LinkTransport {
             },
             metadata: this.metadata,
         })
+        this.notify = new Notify(this)
     }
 
     onSuccess(request, result) {
         if (this.link.transport.onSuccess) {
             this.link.transport.onSuccess(request, result)
         }
+    }
+    onAppRemoveSession(callback) {
+        this.notify.connect(async () => {
+            await this.remove(false)
+            callback()
+        })
+    }
+
+    async sendRemove() {
+        await this.notify.send()
     }
 
     onFailure(request, error) {

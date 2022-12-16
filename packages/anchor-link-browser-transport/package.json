@@ -1,6 +1,6 @@
 {
   "name": "@amax/anchor-link-browser-transport",
-  "version": "3.5.2",
+  "version": "3.6.0",
   "description": "Vanilla JS browser transport for Anchor Link",
   "homepage": "https://github.com/greymass/anchor-link-browser-transport",
   "license": "BSD-3-Clause",
@@ -20,7 +20,7 @@
   },
   "peerDependencies": {},
   "devDependencies": {
-    "@amax/anchor-link": "^3.5.2",
+    "@amax/anchor-link": "^3.5.13",
     "@babel/core": "^7.12.9",
     "@babel/plugin-proposal-class-properties": "^7.12.1",
     "@babel/preset-env": "^7.12.7",

@@ -6,17 +6,24 @@ import BrowserTransport from './transport'
 const appId = 'trans.test'
 
 const transport = new BrowserTransport()
+const isProd = false
+const network = {
+    blockchain: 'amax',
+    expireInSeconds: 600,
+    host: isProd ? 'expnode.amaxscan.io' : 'test-chain.ambt.art',
+    // port: 80, // ( or null if defaulting to 80 )
+    chainId: isProd
+        ? '2403d6f602a87977f898aa3c62c79a760f458745904a15b3cd63a106f62adc16'
+        : '208dacab3cd2e181c86841613cf05d9c60786c677e4ce86b266d0a58884968f7', // Or null to fetch automatically ( takes longer )
+    protocol: 'https',
+}
 
 const link = new Link({
     transport,
     chains: [
         {
-            chainId: '2a02a0053e5a8cf73a56ba0fda11e4d92e0238a4a2aa74fccf46d5a910746840',
-            nodeUrl: 'https://jungle3.greymass.com',
-        },
-        {
-            chainId: 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
-            nodeUrl: 'https://eos.greymass.com',
+            chainId: network.chainId,
+            nodeUrl: `${network.protocol}://${network.host}`,
         },
     ],
 })

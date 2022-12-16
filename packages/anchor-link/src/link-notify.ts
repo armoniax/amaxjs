@@ -11,10 +11,14 @@ export const msgType = {
 
 export class Notify {
     private socket: WebSocket | undefined
-    private session: LinkChannelSession | undefined
+    private session: LinkChannelSession
 
-    connect(session: LinkChannelSession, onAppRemoveSession?) {
-        const {channelUrl, channelKey} = session
+    constructor(session: LinkChannelSession) {
+        this.session = session
+    }
+
+    connect(onAppRemoveSession?) {
+        const {channelUrl, channelKey} = this.session
         const url = new URL(channelUrl)
         const socket = new WebSocket(`wss://${url.host}/${channelKey.toLegacyString('AM')}`)
         const buf2hex = (buffer) =>
@@ -55,7 +59,6 @@ export class Notify {
         }
 
         this.socket = socket
-        this.session = session
     }
 
     async send(msg = msgType.web2app) {
@@ -68,7 +71,7 @@ export class Notify {
 
             try {
                 const response = await fetch(
-                    `https://${url.host}/${channelKey?.toLegacyString('AM')}`,
+                    `https://${url.host}/${channelKey.toLegacyString('AM')}`,
                     {
                         method: 'POST',
                         headers: {
