@@ -24,6 +24,11 @@ const Eos = (config = {}) => {
       error: (...args) => (config.verbose ? console.error(...args) : null),
     },
     sign: true,
+    retry: {
+      count: 3,
+      codes: [3080004, 3080005, 3080006, 3081001],
+      delay: 500,
+    },
   };
 
   function applyDefaults(target, defaults) {
@@ -32,6 +37,14 @@ const Eos = (config = {}) => {
         target[key] = defaults[key];
       }
     });
+  }
+
+  if (
+    config.retry &&
+    Object.prototype.toString.call(config.retry) !== "[object Object]"
+  ) {
+    config.retry = configDefaults.retry;
+    console.warn(" config.retry must be object");
   }
 
   applyDefaults(config, configDefaults);

@@ -4,7 +4,7 @@
     "scan": "Scan the QR-code with APLink.",
     "login": "Login",
     "sign": "Sign",
-    "openAPLink": "Please open APLink Wallet on “{deviceName}” to review and sign the transaction.",
+    "openAPLink": "Please open APLink Wallet to review and sign the transaction.",
     "review": "Please review and sign the transaction in the linked wallet.",
     "signManually": "Sign manually or with another device",
     "preparingRequest": "Preparing request...",

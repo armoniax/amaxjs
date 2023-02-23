@@ -1,10 +1,10 @@
 {
     "success": "Success",
     "scanOrButton": "使用APLink钱包扫码或点击启用",
-    "scan": "使用APLink钱包扫码二维码",
+    "scan": "使用APLink钱包扫描二维码",
     "login": "登录",
     "sign": "签名",
-    "openAPLink": "请在“{deviceName}”上打开 APLink 钱包查看并签署交易。",
+    "openAPLink": "请打开APLink钱包查看并签署交易。",
     "review": "请在连接钱包中审核并签署交易。",
     "signManually": "手动签名或使用其他设备签名",
     "preparingRequest": "正在准备请求...",

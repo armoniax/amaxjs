@@ -677,30 +677,46 @@ function WriteApi(Network, network, config, Transaction) {
             transaction: packedTr,
           });
         } else {
-          network.pushTransaction(packedTr, (error, processedTransaction) => {
-            if (!error) {
-              callback(
-                null,
-                Object.assign(
-                  {
-                    broadcast: true,
-                    transaction: packedTr,
-                    transaction_id: transactionId,
-                  },
-                  processedTransaction
-                )
-              );
-            } else {
-              if (config.logger.error) {
-                config.logger.error(
-                  `[push_transaction error] '${
-                    error.message
-                  }', transaction '${buf.toString("hex")}'`
+          let retryIndex = 1;
+          function pushTransaction() {
+            network.pushTransaction(packedTr, (error, processedTransaction) => {
+              if (!error) {
+                callback(
+                  null,
+                  Object.assign(
+                    {
+                      broadcast: true,
+                      transaction: packedTr,
+                      transaction_id: transactionId,
+                    },
+                    processedTransaction
+                  )
                 );
+              } else {
+                if (config.logger.error) {
+                  config.logger.error(
+                    `[push_transaction error] '${
+                      error.message
+                    }', transaction '${buf.toString("hex")}'`
+                  );
+                }
+                try {
+                  const {
+                    error: { code },
+                  } = JSON.parse(error.message);
+                  if (config.retry.codes.includes(code)) {
+                    if (retryIndex < config.retry.count) {
+                      retryIndex++;
+                      setTimeout(pushTransaction, config.retry.delay);
+                      return;
+                    }
+                  }
+                } catch (e) {}
+                callback(error.message);
               }
-              callback(error.message);
-            }
-          });
+            });
+          }
+          pushTransaction();
         }
       })
       .catch((error) => {

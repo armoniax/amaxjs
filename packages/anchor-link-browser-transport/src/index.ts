@@ -424,7 +424,7 @@ export default class BrowserTransport implements LinkTransport {
         let subtitle: string
         if (deviceName && deviceName.length > 0) {
             // `Please open APLink Wallet on “${deviceName}” to review and sign the transaction.`
-            subtitle = this.intl.get('openAPLink', {deviceName})
+            subtitle = this.intl.get('openAPLink')
         } else {
             // 'Please review and sign the transaction in the linked wallet.'
             subtitle = this.intl.get('review')
