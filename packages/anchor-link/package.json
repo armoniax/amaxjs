@@ -1,6 +1,6 @@
 {
     "name": "@amax/anchor-link",
-    "version": "3.5.13",
+    "version": "3.6.4",
     "description": "Library for authenticating and signing transactions using the Anchor Link protocol",
     "license": "BSD-3-Clause",
     "main": "lib/anchor-link.js",
@@ -34,9 +34,9 @@
         "crypto": false
     },
     "dependencies": {
-        "@greymass/eosio": "^0.6.0",
+        "@amax/amaxjs-core": "^0.7.3",
+        "@amax/signing-request": "^2.5.2",
         "@greymass/miniaes": "^1.0.0",
-        "eosio-signing-request": "^2.5.0",
         "fetch-ponyfill": "^7.1.0",
         "isomorphic-ws": "^4.0.1",
         "pako": "^2.0.3",

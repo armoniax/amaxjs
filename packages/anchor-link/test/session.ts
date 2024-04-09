@@ -2,7 +2,7 @@ import {strict as assert} from 'assert'
 import 'mocha'
 
 import {Link, LinkTransport} from '../src'
-import {SigningRequest} from 'eosio-signing-request'
+import {SigningRequest} from '@amax/signing-request'
 import {
     API,
     APIClient,
@@ -11,7 +11,7 @@ import {
     PermissionLevel,
     PrivateKey,
     TimePointSec,
-} from '@greymass/eosio'
+} from '@amax/amaxjs-core'
 import {LinkCallback, LinkCallbackResponse, LinkCallbackService} from '../src/link-callback'
 import {readFileSync} from 'fs'
 import {join as pathJoin} from 'path'
@@ -159,7 +159,7 @@ const link = new Link({
     ],
     transport: manager,
     service: manager,
-    verifyProofs: true
+    verifyProofs: true,
 })
 
 suite('session', function () {

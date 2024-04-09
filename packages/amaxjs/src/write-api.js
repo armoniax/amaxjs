@@ -1,6 +1,6 @@
 const assert = require("assert");
 const ecc = require("@amax/amaxjs-ecc");
-const Fcbuffer = require("fcbuffer");
+const Fcbuffer = require("@amax/fcbuffer");
 const createHash = require("create-hash");
 const { processArgs } = require("@amax/amaxjs-api");
 const Structs = require("./structs");
@@ -433,11 +433,10 @@ function WriteApi(Network, network, config, Transaction) {
       : 60;
     const optionDefault = {
       expireInSeconds: defaultExpiration,
-      broadcast: true,
-      sign: true,
+      broadcast: config.broadcast,
+      sign: config.sign,
     };
     options = Object.assign({} /*clone*/, optionDefault, options);
-
     let returnPromise;
     if (typeof callback !== "function") {
       returnPromise = new Promise((resolve, reject) => {
@@ -475,9 +474,29 @@ function WriteApi(Network, network, config, Transaction) {
       };
     }
 
-    arg.actions.forEach((action) => {
+    function getActions(obj) {
+      const _actions = [];
+      for (const [key, item] of Object.entries(obj)) {
+        if (key === "actions" && Array.isArray(item)) {
+          _actions.push(...item);
+        } else if (typeof item === "object") {
+          _actions.push(...getActions(item));
+        }
+      }
+      return _actions;
+    }
+
+    arg.actions.forEach(async (action) => {
       if (!Array.isArray(action.authorization)) {
         throw new TypeError("Expecting action.authorization array", action);
+      }
+
+      // action get abi
+      const _actions = getActions(action.data);
+      if (_actions.length) {
+        await Promise.all(
+          _actions.map(({ account }) => config.abiCache.abiAsync(account))
+        );
       }
     });
 

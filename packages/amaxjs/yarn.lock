@@ -24,6 +24,15 @@
     ecurve "^1.0.5"
     randombytes "^2.0.5"
 
+"@amax/fcbuffer@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@amax/fcbuffer/-/fcbuffer-0.0.1.tgz#64413bfe0e0f493d24f0ca09388eb73f321bee4e"
+  integrity sha512-IUOMaopmVMzyDTxs8MJZsCTqGxmOMQyUDG7wMit033K5zt7OUTomqBp6nAPpl7OdEqUOHqCp9VYyBBVkjREnCg==
+  dependencies:
+    bn.js "^4.11.8"
+    bytebuffer "^5.0.1"
+    ieee-float "^0.6.0"
+
 "@babel/code-frame@^7.16.7":
   version "7.16.7"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.16.7.tgz#44416b6bd7624b998f5b1af5d470856c40138789"
@@ -1954,15 +1963,6 @@ fast-safe-stringify@^2.0.7:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/fast-safe-stringify/-/fast-safe-stringify-2.1.1.tgz#c406a83b6e70d9e35ce3b30a81141df30aeba884"
   integrity sha512-W+KJc2dmILlPplD/H4K9l9LcAHAfPtP6BY84uVLXQ6Evcz9Lcg33Y2z1IVblT6xdY54PXYVHEv+0Wpq8Io6zkA==
-
-fcbuffer@2.2.2:
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/fcbuffer/-/fcbuffer-2.2.2.tgz#987d10062c46a8bfea27da77c964f43e9e25a014"
-  integrity sha512-4OhDYe3F3iToKkqao6aj72XcvEjCB4p06U8Wy30lYcLQTp2ispBf2cCyeymKPJQGnbG5wpBa2PraaWWJuZVnUg==
-  dependencies:
-    bn.js "^4.11.8"
-    bytebuffer "^5.0.1"
-    ieee-float "^0.6.0"
 
 file-set@^1.1.1:
   version "1.1.2"

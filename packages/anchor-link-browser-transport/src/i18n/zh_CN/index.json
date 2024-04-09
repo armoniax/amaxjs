@@ -4,6 +4,7 @@
     "scan": "使用APLink钱包扫描二维码",
     "login": "登录",
     "sign": "签名",
+    "submit": "提交",
     "openAPLink": "请打开APLink钱包查看并签署交易。",
     "review": "请在连接钱包中审核并签署交易。",
     "signManually": "手动签名或使用其他设备签名",

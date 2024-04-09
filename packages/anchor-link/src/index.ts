@@ -6,5 +6,5 @@ import {Link} from './index-module'
 export default Link
 
 // expose dependencies
-export * from 'eosio-signing-request'
-export * from '@greymass/eosio'
+export * from '@amax/signing-request'
+export * from '@amax/amaxjs-core'

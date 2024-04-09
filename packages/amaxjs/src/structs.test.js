@@ -1,6 +1,6 @@
 /* eslint-env mocha */
 const assert = require("assert");
-const Fcbuffer = require("fcbuffer");
+const Fcbuffer = require("@amax/fcbuffer");
 const ByteBuffer = require("bytebuffer");
 
 const Eos = require(".");

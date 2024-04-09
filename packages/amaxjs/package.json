@@ -1,6 +1,6 @@
 {
   "name": "@amax/amaxjs",
-  "version": "0.0.5",
+  "version": "0.1.5",
   "description": "General purpose library for the AMAX blockchain.",
   "main": "lib/index.js",
   "files": [
@@ -57,10 +57,10 @@
   "dependencies": {
     "@amax/amaxjs-api": "^7.0.4",
     "@amax/amaxjs-ecc": "^0.0.1",
+    "@amax/fcbuffer": "^0.0.1",
     "babel-runtime": "6.26.0",
     "binaryen": "^37.0.0",
-    "create-hash": "^1.1.3",
-    "fcbuffer": "2.2.2"
+    "create-hash": "^1.1.3"
   },
   "babel": {
     "presets": [

@@ -21,3 +21,4 @@ config.gypi
 package-lock.json
 np
 amaxjs-signing-request
+_amaxjs-signing-request

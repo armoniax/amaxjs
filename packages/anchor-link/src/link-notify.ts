@@ -1,4 +1,4 @@
-import {Serializer} from '@greymass/eosio'
+import {Serializer} from '@amax/amaxjs-core'
 import WebSocket from 'isomorphic-ws'
 import {LinkChannelSession} from './index-module'
 

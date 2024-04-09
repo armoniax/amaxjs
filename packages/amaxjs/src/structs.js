@@ -1,5 +1,5 @@
 const { Signature, PublicKey } = require("@amax/amaxjs-ecc");
-const Fcbuffer = require("fcbuffer");
+const Fcbuffer = require("@amax/fcbuffer");
 const ByteBuffer = require("bytebuffer");
 const assert = require("assert");
 
@@ -19,7 +19,7 @@ const {
 /** Configures Fcbuffer for EOS specific structs and types. */
 module.exports = (config = {}, extendedSchema) => {
   const structLookup = (lookupName, account) => {
-    const cache = config.abiCache.abi(account);
+    var cache = config.abiCache.abi(account);
 
     // Lookup by ABI action "name"
     for (const action of cache.abi.actions) {
@@ -303,11 +303,19 @@ const ExtendedSymbol = (validation, baseTypes, customTypes) => {
     fromByteBuffer(b) {
       const symbol = symbolType.fromByteBuffer(b);
       const contract = contractName.fromByteBuffer(b);
-      return `${symbol}@${contract}`;
+      // return `${symbol}@${contract}`;
+
+      return {
+        sym: symbol,
+        contract,
+      };
     },
 
     appendByteBuffer(b, value) {
-      assert.equal(typeof value, "string", "Invalid extended symbol: " + value);
+      // assert.equal(typeof value, "string", "Invalid extended symbol: " + value);
+      if (typeof value === "object") {
+        value = `${value.sym}@${value.contract}`;
+      }
 
       const [symbol, contract] = value.split("@");
       assert(
@@ -325,7 +333,11 @@ const ExtendedSymbol = (validation, baseTypes, customTypes) => {
 
     toObject(value) {
       if (validation.defaults && value == null) {
-        return "SYS@contract";
+        // return "SYS@contract";
+        return {
+          sym: "SYS",
+          contract: "contract",
+        };
       }
       return value;
     },
@@ -634,47 +646,56 @@ const actionDataOverride = (structLookup, forceActionDataHex) => ({
 
   "action.data.fromObject": ({ fields, object, result }) => {
     const { data, name } = object;
-    const ser =
-      (name || "") == "" ? fields.data : structLookup(name, object.account);
-    if (ser) {
-      if (typeof data === "object") {
-        result.data = ser.fromObject(data); // resolve shorthand
-      } else if (typeof data === "string") {
-        const buf = Buffer.from(data, "hex");
-        result.data = Fcbuffer.fromBuffer(ser, buf);
+    try {
+      var ser =
+        (name || "") == "" ? fields.data : structLookup(name, object.account);
+
+      if (ser) {
+        if (typeof data === "object") {
+          result.data = ser.fromObject(data); // resolve shorthand
+        } else if (typeof data === "string") {
+          const buf = Buffer.from(data, "hex");
+          result.data = Fcbuffer.fromBuffer(ser, buf);
+        } else {
+          throw new TypeError("Expecting hex string or object in action.data");
+        }
       } else {
-        throw new TypeError("Expecting hex string or object in action.data");
+        // console.log(`Unknown Action.name ${object.name}`)
+        result.data = data;
       }
-    } else {
-      // console.log(`Unknown Action.name ${object.name}`)
+    } catch (e) {
       result.data = data;
     }
   },
 
   "action.data.toObject": ({ fields, object, result, config }) => {
     const { data, name } = object || {};
-    const ser =
-      (name || "") == "" ? fields.data : structLookup(name, object.account);
-    if (!ser) {
-      // Types without an ABI will accept hex
-      result.data = Buffer.isBuffer(data) ? data.toString("hex") : data;
-      return;
-    }
-
-    if (forceActionDataHex) {
-      const b2 = new ByteBuffer(
-        ByteBuffer.DEFAULT_CAPACITY,
-        ByteBuffer.LITTLE_ENDIAN
-      );
-      if (data) {
-        ser.appendByteBuffer(b2, data);
+    try {
+      const ser =
+        (name || "") == "" ? fields.data : structLookup(name, object.account);
+      if (!ser) {
+        // Types without an ABI will accept hex
+        result.data = Buffer.isBuffer(data) ? data.toString("hex") : data;
+        return;
       }
-      result.data = b2.copy(0, b2.offset).toString("hex");
-      // console.log('result.data', result.data)
-      return;
-    }
 
-    // Serializable JSON
-    result.data = ser.toObject(data, config);
+      if (forceActionDataHex) {
+        const b2 = new ByteBuffer(
+          ByteBuffer.DEFAULT_CAPACITY,
+          ByteBuffer.LITTLE_ENDIAN
+        );
+        if (data) {
+          ser.appendByteBuffer(b2, data);
+        }
+        result.data = b2.copy(0, b2.offset).toString("hex");
+        // console.log('result.data', result.data)
+        return;
+      }
+
+      // Serializable JSON
+      result.data = ser.toObject(data, config);
+    } catch (e) {
+      result.data = Buffer.isBuffer(data) ? data.toString("hex") : data;
+    }
   },
 });

@@ -17,4 +17,4 @@ export {
     ChainId,
     ChainIdType,
     ChainName,
-} from 'eosio-signing-request'
+} from '@amax/signing-request'

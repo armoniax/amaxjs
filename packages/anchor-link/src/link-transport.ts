@@ -1,5 +1,5 @@
-import type {Bytes} from '@greymass/eosio'
-import type {SigningRequest} from 'eosio-signing-request'
+import type {Bytes} from '@amax/amaxjs-core'
+import type {SigningRequest} from '@amax/signing-request'
 
 import type {TransactResult} from './link'
 import type {LinkSession} from './link-session'

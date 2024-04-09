@@ -8,8 +8,8 @@ import {
     PublicKey,
     Serializer,
     UInt64,
-} from '@greymass/eosio'
-import {CallbackPayload, SigningRequest} from 'eosio-signing-request'
+} from '@amax/amaxjs-core'
+import {CallbackPayload, SigningRequest} from '@amax/signing-request'
 
 import {SealedMessage} from './link-types'
 
@@ -55,7 +55,10 @@ export function sessionMetadata(payload: CallbackPayload, request: SigningReques
     // append extra metadata from the signer
     if (payload.link_meta) {
         try {
-            const parsed = JSON.parse(payload.link_meta)
+            const parsed =
+                typeof payload.link_meta === 'string'
+                    ? JSON.parse(payload.link_meta)
+                    : payload.link_meta
             for (const key of Object.keys(parsed)) {
                 // normalize key names to camelCase
                 metadata[snakeToCamel(key)] = parsed[key]

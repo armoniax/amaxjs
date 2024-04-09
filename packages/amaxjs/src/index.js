@@ -1,5 +1,5 @@
 const ecc = require("@amax/amaxjs-ecc");
-const Fcbuffer = require("fcbuffer");
+const Fcbuffer = require("@amax/fcbuffer");
 const EosApi = require("@amax/amaxjs-api");
 const assert = require("assert");
 
@@ -49,6 +49,7 @@ const Eos = (config = {}) => {
 
   applyDefaults(config, configDefaults);
   applyDefaults(config.logger, configDefaults.logger);
+  applyDefaults(config.retry, configDefaults.retry);
   return createEos(config);
 };
 

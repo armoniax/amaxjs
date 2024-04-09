@@ -433,7 +433,9 @@ export default class BrowserTransport implements LinkTransport {
         const title = this.createEl({tag: 'span', text: this.intl.get('sign')})
         const expires = new Date(Date.now() + timeout)
         const updateCountdown = () => {
-            title.textContent = `${this.intl.get('sign')} - ${countdownFormat(expires)}`
+            title.textContent = `${this.intl.get('sign')} & ${this.intl.get(
+                'submit'
+            )} - ${countdownFormat(expires)}`
         }
         this.countdownTimer = setInterval(updateCountdown, 200)
         updateCountdown()

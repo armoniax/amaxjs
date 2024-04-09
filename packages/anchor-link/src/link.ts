@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck
 import zlib from 'pako'
 
 import {
@@ -17,7 +19,7 @@ import {
     Signature,
     SignedTransaction,
     Transaction,
-} from '@greymass/eosio'
+} from '@amax/amaxjs-core'
 
 import {
     AbiProvider,
@@ -31,7 +33,7 @@ import {
     ResolvedTransaction,
     SigningRequest,
     SigningRequestCreateArguments,
-} from 'eosio-signing-request'
+} from '@amax/signing-request'
 
 import {CancelError, IdentityError} from './errors'
 import {LinkOptions} from './link-options'
@@ -127,7 +129,7 @@ export type LinkChainType = LinkChain | ChainIdType | number
 /**
  * Class representing a EOSIO chain.
  */
-export class LinkChain implements AbiProvider {
+export class LinkChain  {
     /** EOSIO ChainID for which requests are valid. */
     public chainId: ChainId
     /** API client instance used to communicate with the chain. */
