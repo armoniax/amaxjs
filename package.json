@@ -8,12 +8,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bvejs/bve.git"
+    "url": "git+https://github.com/armoniax/amaxjs/tree/main"
   },
   "author": "AMAX <aplink2022@gmail.com>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/bvejs/bve/issues"
+    "url": "https://github.com/armoniax/amaxjs/issues"
   },
-  "homepage": "https://github.com/bvejs/bve#readme"
+  "homepage": "https://github.com/armoniax/amaxjs/tree/main#readme"
 }

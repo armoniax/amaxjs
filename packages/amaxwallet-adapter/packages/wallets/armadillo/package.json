@@ -1,0 +1,53 @@
+{
+    "name": "@amax/amaxwallet-adapter-armadillo",
+    "version": "1.1.1",
+    "description": "Wallet adapter for armadillo Wallet extension.",
+    "keywords": [
+        "armoniax",
+        "amaxScan",
+        "Armadillo"
+    ],
+    "author": "armoniax",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/armoniax/amaxjs/tree/main/packages/amaxwallet-adapter/packages/adapters/wallets/armadillo"
+    },
+    "license": "MIT",
+    "type": "module",
+    "sideEffects": false,
+    "engines": {
+        "node": ">=16",
+        "pnpm": ">=7"
+    },
+    "main": "./lib/cjs/index.js",
+    "module": "./lib/esm/index.js",
+    "types": "./lib/types/index.d.ts",
+    "exports": {
+        "require": "./lib/cjs/index.js",
+        "import": "./lib/esm/index.js",
+        "types": "./lib/types/index.d.ts"
+    },
+    "files": [
+        "lib",
+        "src",
+        "LICENSE"
+    ],
+    "publishConfig": {
+        "access": "public"
+    },
+    "scripts": {
+        "clean": "shx mkdir -p lib && shx rm -rf lib",
+        "package": "shx echo '{ \"type\": \"commonjs\" }' > lib/cjs/package.json",
+        "test": "jest",
+        "test:coverage": "jest  --coverage",
+        "build:umd": "node ../../../scripts/build-umd.js"
+    },
+    "dependencies": {
+        "@amax/abstract-adapter": "workspace:^"
+    },
+    "devDependencies": {
+        "@testing-library/dom": "^8.20.1",
+        "jest-environment-jsdom": "^29.7.0",
+        "shx": "^0.3.4"
+    }
+}

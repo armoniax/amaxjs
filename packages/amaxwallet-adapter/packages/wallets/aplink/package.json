@@ -1,0 +1,56 @@
+{
+    "name": "@amax/amaxwallet-adapter-aplink",
+    "version": "1.1.0",
+    "description": "Wallet adapter for aplink Wallet.",
+    "keywords": [
+        "armoniax",
+        "amaxScan",
+        "APLink"
+    ],
+    "author": "armoniax",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/armoniax/amaxjs/tree/main/packages/amaxwallet-adapter/packages/adapters/wallets/aplink"
+    },
+    "license": "MIT",
+    "type": "module",
+    "sideEffects": false,
+    "engines": {
+        "node": ">=16",
+        "pnpm": ">=7"
+    },
+    "main": "./lib/cjs/index.js",
+    "module": "./lib/esm/index.js",
+    "types": "./lib/types/index.d.ts",
+    "exports": {
+        "require": "./lib/cjs/index.js",
+        "import": "./lib/esm/index.js",
+        "types": "./lib/types/index.d.ts"
+    },
+    "files": [
+        "lib",
+        "src",
+        "LICENSE"
+    ],
+    "publishConfig": {
+        "access": "public"
+    },
+    "scripts": {
+        "clean": "shx mkdir -p lib && shx rm -rf lib",
+        "package": "shx echo '{ \"type\": \"commonjs\" }' > lib/cjs/package.json",
+        "test": "jest",
+        "test:coverage": "jest  --coverage",
+        "build:umd": "node ../../../scripts/build-umd.js"
+    },
+    "dependencies": {
+        "@amax/abstract-adapter": "workspace:^",
+        "@amax/anchor-link": "^3.6.4",
+        "@amax/anchor-link-browser-transport": "^3.6.4",
+        "@greymass/eosio": "^0.7.0"
+    },
+    "devDependencies": {
+        "@testing-library/dom": "^8.20.1",
+        "jest-environment-jsdom": "^29.7.0",
+        "shx": "^0.3.4"
+    }
+}

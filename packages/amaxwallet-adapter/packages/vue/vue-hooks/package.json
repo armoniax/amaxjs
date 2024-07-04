@@ -1,0 +1,53 @@
+{
+    "name": "@amax/amaxwallet-adapter-vue-hooks",
+    "version": "1.1.1",
+    "description": "A `useWallet()` hook to make it easy to interact with Tron wallets.",
+    "keywords": [
+        "armoniax",
+        "amaxScan",
+        "vue-hooks"
+    ],
+    "author": "armoniax",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/armoniax/amaxjs/tree/main/packages/amaxwallet-adapter/packages/vue/vue-hooks"
+    },
+    "license": "MIT",
+    "type": "module",
+    "sideEffects": false,
+    "engines": {
+        "node": ">=16",
+        "pnpm": ">=7"
+    },
+    "main": "./lib/cjs/index.js",
+    "module": "./lib/esm/index.js",
+    "types": "./lib/types/index.d.ts",
+    "exports": {
+        "require": "./lib/cjs/index.js",
+        "import": "./lib/esm/index.js",
+        "types": "./lib/types/index.d.ts"
+    },
+    "files": [
+        "lib",
+        "src",
+        "LICENSE"
+    ],
+    "publishConfig": {
+        "access": "public"
+    },
+    "scripts": {
+        "clean": "shx mkdir -p lib && shx rm -rf lib",
+        "package": "shx echo '{ \"type\": \"commonjs\" }' > lib/cjs/package.json",
+        "test": "vitest run"
+    },
+    "dependencies": {
+        "@amax/abstract-adapter": "workspace:^"
+    },
+    "devDependencies": {
+        "@vue/test-utils": "^2.4.6",
+        "jsdom": "^23.2.0",
+        "shx": "^0.3.4",
+        "vitest": "^1.6.0",
+        "vue": "^3.4.31"
+    }
+}

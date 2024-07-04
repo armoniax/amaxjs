@@ -1,0 +1,72 @@
+{
+    "name": "react-ui-create-react-app",
+    "version": "2.0.3",
+    "private": true,
+    "dependencies": {
+        "@amax/abstract-adapter": "workspace:^",
+        "@amax/amaxwallet-adapter-armadillo": "workspace:^",
+        "@amax/amaxwallet-adapter-react-hooks": "workspace:^",
+        "@amax/amaxwallet-adapter-react-ui": "workspace:^",
+        "@amax/amaxwallet-adapters": "workspace:^",
+        "@emotion/react": "^11.11.4",
+        "@emotion/styled": "^11.11.5",
+        "@mui/material": "^5.15.21",
+        "@testing-library/jest-dom": "^5.17.0",
+        "@testing-library/react": "^13.4.0",
+        "@testing-library/user-event": "^13.5.0",
+        "@types/jest": "^27.5.2",
+        "@types/node": "^16.18.101",
+        "@types/react": "^18.3.3",
+        "@types/react-dom": "^18.3.0",
+        "assert": "^2.1.0",
+        "browserify-zlib": "^0.2.0",
+        "buffer": "^6.0.3",
+        "crypto-browserify": "^3.12.0",
+        "https-browserify": "^1.0.0",
+        "path-browserify": "^1.0.1",
+        "postcss-flexbugs-fixes": "^5.0.2",
+        "process": "^0.11.10",
+        "querystring": "^0.2.1",
+        "react": "^18.3.1",
+        "react-app-rewired": "2.2.1",
+        "react-dom": "^18.3.1",
+        "react-hot-toast": "^2.4.1",
+        "react-scripts": "5.0.1",
+        "stream-browserify": "^3.0.0",
+        "stream-http": "^3.2.0",
+        "tronweb": "^4.4.0",
+        "typescript": "^4.9.5",
+        "url": "^0.11.3",
+        "util": "^0.12.5",
+        "vconsole": "^3.15.1",
+        "vm-browserify": "^1.1.2",
+        "web-vitals": "^2.1.4"
+    },
+    "scripts": {
+        "start": "HTTPS=true GENERATE_SOURCEMAP=false PORT=5001 react-app-rewired start",
+        "build": "GENERATE_SOURCEMAP=false react-app-rewired build",
+        "test": "react-app-rewired test",
+        "eject": "react-scripts eject"
+    },
+    "eslintConfig": {
+        "extends": [
+            "react-app",
+            "react-app/jest"
+        ]
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
+    "devDependencies": {
+        "webpack": "^5.92.1"
+    }
+}

@@ -1,0 +1,51 @@
+{
+    "name": "@amax/amaxwallet-adapters",
+    "version": "1.1.1",
+    "description": "Wallet adapters to help developers interact with Amax wallets using consistent API.",
+    "keywords": [
+        "armoniax",
+        "amaxScan"
+    ],
+    "author": "armoniax",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/armoniax/amaxjs/tree/main/packages/amaxwallet-adapter/packages/adapters/adapters"
+    },
+    "license": "MIT",
+    "type": "module",
+    "sideEffects": false,
+    "engines": {
+        "node": ">=16",
+        "pnpm": ">=7"
+    },
+    "main": "./lib/cjs/index.js",
+    "module": "./lib/esm/index.js",
+    "types": "./lib/types/index.d.ts",
+    "exports": {
+        "require": "./lib/cjs/index.js",
+        "import": "./lib/esm/index.js",
+        "types": "./lib/types/index.d.ts"
+    },
+    "files": [
+        "lib",
+        "src",
+        "LICENSE"
+    ],
+    "publishConfig": {
+        "access": "public"
+    },
+    "scripts": {
+        "clean": "shx mkdir -p lib && shx rm -rf lib",
+        "package": "shx echo '{ \"type\": \"commonjs\" }' > lib/cjs/package.json",
+        "build:umd": "node ../../../scripts/build-umd.js"
+    },
+    "dependencies": {
+        "@amax/amaxwallet-adapter-armadillo": "workspace:^",
+        "@amax/amaxwallet-adapter-aplink": "workspace:^",
+        "@amax/amaxwallet-adapter-metamask": "workspace:^",
+        "@amax/amaxwallet-adapter-unisat": "workspace:^"
+    },
+    "devDependencies": {
+        "shx": "^0.3.4"
+    }
+}

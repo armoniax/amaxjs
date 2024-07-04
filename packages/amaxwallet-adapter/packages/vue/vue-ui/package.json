@@ -1,0 +1,69 @@
+{
+    "name": "@amax/amaxwallet-adapter-vue-ui",
+    "version": "1.1.1",
+    "description": "A set of out-of-the-box components to make it easy to interact with Tron wallets.",
+    "keywords": [
+        "armoniax",
+        "amaxScan"
+    ],
+    "author": "armoniax",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/armoniax/amaxjs/tree/main/packages/amaxwallet-adapter/packages/vue/vue-ui"
+    },
+    "license": "MIT",
+    "type": "module",
+    "sideEffects": false,
+    "engines": {
+        "node": ">=16",
+        "pnpm": ">=7"
+    },
+    "main": "./lib/cjs/index.js",
+    "module": "./lib/esm/index.js",
+    "types": "./lib/types/index.d.ts",
+    "exports": {
+        ".": {
+            "import": "./lib/esm/index.js",
+            "require": "./lib/cjs/index.js",
+            "types": "./lib/types/index.d.ts"
+        },
+        "./style.css": "./style.css"
+    },
+    "files": [
+        "lib",
+        "src",
+        "LICENSE",
+        "style.css"
+    ],
+    "publishConfig": {
+        "access": "public"
+    },
+    "scripts": {
+        "clean": "shx mkdir -p lib && shx rm -rf lib",
+        "package": "shx echo '{ \"type\": \"commonjs\" }' > lib/cjs/package.json",
+        "build:types": "tsc -p tsconfig.esm.json",
+        "build:cjs": "babel ./src --out-dir lib/cjs --extensions .tsx,.ts --config-file ./babel.config.cjs.json",
+        "build:esm": "babel ./src --out-dir lib/esm --extensions .tsx,.ts --config-file ./babel.config.esm.json",
+        "build": "pnpm build:cjs & pnpm build:esm & pnpm build:types",
+        "watch": "pnpm build:cjs -w & pnpm build:esm -w & pnpm build:types --watch",
+        "test": "vitest run"
+    },
+    "dependencies": {
+        "@amax/abstract-adapter": "workspace:^",
+        "@amax/amaxwallet-adapter-vue-hooks": "workspace:^"
+    },
+    "devDependencies": {
+        "@babel/cli": "^7.24.7",
+        "@babel/core": "^7.24.7",
+        "@babel/preset-typescript": "^7.24.7",
+        "@vitejs/plugin-vue": "^4.6.2",
+        "@vitejs/plugin-vue-jsx": "^3.1.0",
+        "@vue/babel-plugin-jsx": "^1.2.2",
+        "@vue/test-utils": "^2.4.6",
+        "jsdom": "^23.2.0",
+        "shx": "^0.3.4",
+        "vite": "^5.3.3",
+        "vitest": "^1.6.0",
+        "vue": "^3.4.31"
+    }
+}

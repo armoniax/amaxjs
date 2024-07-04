@@ -1,0 +1,56 @@
+{
+    "name": "@amax/amaxwallet-adapter-metamask",
+    "version": "1.1.0",
+    "description": "Wallet adapter for metamask snap Wallet.",
+    "keywords": [
+        "armoniax",
+        "amaxScan",
+        "metamask"
+    ],
+    "author": "armoniax",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/armoniax/amaxjs/tree/main/packages/amaxwallet-adapter/packages/adapters/wallets/metamask"
+    },
+    "license": "MIT",
+    "type": "module",
+    "sideEffects": false,
+    "engines": {
+        "node": ">=16",
+        "pnpm": ">=7"
+    },
+    "main": "./lib/cjs/index.js",
+    "module": "./lib/esm/index.js",
+    "types": "./lib/types/index.d.ts",
+    "exports": {
+        "require": "./lib/cjs/index.js",
+        "import": "./lib/esm/index.js",
+        "types": "./lib/types/index.d.ts"
+    },
+    "files": [
+        "lib",
+        "src",
+        "LICENSE"
+    ],
+    "publishConfig": {
+        "access": "public"
+    },
+    "scripts": {
+        "clean": "shx mkdir -p lib && shx rm -rf lib",
+        "package": "shx echo '{ \"type\": \"commonjs\" }' > lib/cjs/package.json",
+        "test": "jest",
+        "test:coverage": "jest  --coverage",
+        "build:umd": "node ../../../scripts/build-umd.js"
+    },
+    "dependencies": {
+        "@amax/abstract-adapter": "workspace:^",
+        "@amax/amaxjs-v2": "^22.1.1",
+        "@metamask/providers": "^16.1.0"
+    },
+    "devDependencies": {
+        "@testing-library/dom": "^8.20.1",
+        "@types/readable-stream": "^4.0.14",
+        "jest-environment-jsdom": "^29.7.0",
+        "shx": "^0.3.4"
+    }
+}

@@ -273,6 +273,10 @@ export class LinkChannelSession extends LinkSession implements LinkTransport {
         return this.link.makeSignatureProvider([this.publicKey.toString()], this.chainId, this)
     }
 
+    async signMessage(msg: string) {
+        return await this.link.signMessage(msg, this)
+    }
+
     async transact(args: TransactArgs, options?: TransactOptions) {
         const res: TransactResult = await this.link.transact(
             args,

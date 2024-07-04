@@ -1,0 +1,23 @@
+{
+    "extends": "../../../tsconfig.root.json",
+    "references": [
+        {
+            "path": "../../wallets/armadillo/tsconfig.all.json"
+        },
+        {
+            "path": "../../wallets/aplink/tsconfig.all.json"
+        },
+        {
+            "path": "../../wallets/metamask/tsconfig.all.json"
+        },
+        {
+            "path": "../../wallets/unisat/tsconfig.all.json"
+        },
+        {
+            "path": "./tsconfig.cjs.json"
+        },
+        {
+            "path": "./tsconfig.esm.json"
+        }
+    ]
+}

@@ -129,7 +129,7 @@ export type LinkChainType = LinkChain | ChainIdType | number
 /**
  * Class representing a EOSIO chain.
  */
-export class LinkChain  {
+export class LinkChain {
     /** EOSIO ChainID for which requests are valid. */
     public chainId: ChainId
     /** API client instance used to communicate with the chain. */
@@ -440,6 +440,39 @@ export class Link {
             }
             throw error
         }
+    }
+
+    public async signMessage(msg: string, transport?: LinkTransport) {
+        const t = transport || this.transport
+        const noModify = true
+        // Initialize the loading state of the transport
+        if (t && t.showLoading) {
+            t.showLoading()
+        }
+
+        const {request, callback} = await this.createRequest(
+            {
+                action: {
+                    account: 'signmessage',
+                    name: 'signmessage',
+                    data: msg,
+                    authorization: [
+                        {
+                            actor: '',
+                            permission: '',
+                        },
+                    ],
+                },
+            },
+            undefined,
+            t
+        )
+        if (noModify) {
+            request.setInfoKey('no_modify', true, 'bool')
+        }
+        const result = await this.sendRequest(request, callback, undefined, t, true)
+        return result
+        // return this.transact({actions: []}, undefined, transport)
     }
 
     /**
